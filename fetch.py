@@ -1,17 +1,30 @@
 import sqlite3
+import gradio as gr
+import pandas as pd
 
-conn = sqlite3.connect('playoffTeams.db')
+def fetchTeams():
+    conn = sqlite3.connect('playoffTeams.db')
 
-cursor = conn.cursor()
+    cursor = conn.cursor()
 
-query = """
-    SELECT * 
-    FROM teams;
-"""
+    query = """
+        SELECT * 
+        FROM teams;
+    """
 
-cursor.execute(query)
-results = cursor.fetchall()
+    cursor.execute(query)
+    results = cursor.fetchall()
 
-conn.close()
+    conn.close()
 
-print(results)
+    df = pd.DataFrame(results, columns = ['id', 'city', 'names'])
+
+    return df
+
+iface = gr.InterFace(
+    fn = fetchTeams,
+    inputs = [],
+    outputs = gr.TextBox()
+)
+
+iface.launch()
